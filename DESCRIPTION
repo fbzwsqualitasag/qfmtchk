@@ -1,12 +1,15 @@
 Package: qfmtchk
-Title: What the Package Does (One Line, Title Case)
+Title: Check Format of Input Data Used for Genetic Evaluations
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Peter",
            family = "von Rohr",
            role = c("aut", "cre"),
            email = "peter.vonrohr@qualitasag.ch")
-Description: What the package does (one paragraph).
+Description: Input data for genetic evaluations is expected to 
+    have a specific format. The format is required by the 
+    evaluation programs. Different features that help to provide 
+    the checks are collected in this package.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en
