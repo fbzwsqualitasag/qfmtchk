@@ -1,0 +1,48 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# qfmtchk
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of qfmtchk is to provide functionalities related to checks and verification of input data for the genetic evaluations at Qualitas AG.
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("fbzwsqualitasag/qfmtchk")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(qfmtchk)
+## basic example code
+s_sql_prg_path <- system.file("extdata", "zws_gal_pgb.sql", package = "qfmtchk")
+tbl_gal_fmt <- extract_gal_fmt(ps_sql_prg_path = s_sql_prg_path)
+```
+
+The above produces a tibble with all column names and the width of the columns.
+
+```{r, echo=FALSE, results='asis'}
+cat(rmdhelp::get_latest_change(), "\n")
+```
+

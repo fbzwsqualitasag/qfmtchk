@@ -3,19 +3,23 @@
 #' date:  2021-10-09
 #' ---
 #'
-#' @title Extract Export Format
+#' @title Generic Extraction of Data Format Information
 #'
 #' @description
+#' The format information is extracted from the SQL-Export routine. This
+#' routine has to be stored in a textfile whose path is given by the
+#' parameter ps_sql_prg_path. In that SQL program all code between the
+#' beginning and the end of the specified routine name (ps_sql_exp_routine)
+#' is investigated for the pattern given by ps_exp_pattern.
 #'
 #' @details
+#' The format extraction works only, if the export routine is written in
+#' a specific way. If these assumptions are not met, the extraction does
+#' not work.
 #'
 #' @param ps_sql_prg_path path to sql program
 #' @param ps_sql_exp_routine name of export routine
-#'
-#' @examples
-#' \dontrun{
-#'
-#' }
+#' @return tbl_fmt tibble with data column name and the width of the column
 #'
 extract_generic_fmt <- function(ps_sql_prg_path,
                                 ps_sql_exp_routine,
@@ -82,18 +86,25 @@ extract_generic_fmt <- function(ps_sql_prg_path,
 #' @title Extract GAL Export Format
 #'
 #' @description
+#' Extraction of format specification of exported GAL data based on SQL export
+#' routine. This function is a wrapper which uses the generic export function
+#' \code{extract_generic_fmt}.
 #'
 #' @details
+#' Usefulness of this function depends on the format of the SQL export routine.
+#' If that format changes, the result might be completely unusable. This function
+#' should only be used once to extract the format. Any updates should be done
+#' on already existing fmt-input files.
 #'
 #' @param ps_sql_prg_path path to sql program
 #' @param ps_sql_exp_routine name of export routine
 #' @param ps_exp_pattern pattern to search for export commands
+#' @return tbl_gal_fmt tibble with the column headers and the column width
 #'
 #' @examples
 #' \dontrun{
-#' ps_sql_prg_path="/Users/pvr/Data/Projects/argus_sql/trunk/Argus/zws_gal_pgb.sql"
-#' ps_sql_exp_routine="ExportGAL"
-#' ps_exp_pattern = "PA_EXP.sFormat"
+#' s_sql_prg_path <- system.file("extdata", "zws_gal_pgb.sql", package = "qfmtchk")
+#' tbl_gal_fmt <- extract_gal_fmt(ps_sql_prg_path = s_sql_prg_path)
 #' }
 #'
 #' @export extract_gal_fmt
