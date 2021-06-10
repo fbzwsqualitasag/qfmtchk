@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, warning=FALSE, message=FALSE}
 library(qfmtchk)
 library(dplyr)
 ```
@@ -28,7 +28,7 @@ Tests and experiments in coming up with format files are described.
 The SQL export program can be used as one possibel source of information. The following call produces a first table of columns and positions.
 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 s_sql_export_prg <- "/Users/pvr/Data/Projects/argus_sql/trunk/Argus/zws_gal_pgb.sql"
 tbl_gal_fmt <- extract_gal_fmt(ps_sql_prg_path = s_sql_export_prg)
 tbl_gal_fmt
@@ -40,48 +40,59 @@ Based on the code some manual improvements have to be made. The following list s
 
 1. Row 3 contains the blood content of the animal
 
-```{r}
+```{r, eval=FALSE}
 tbl_gal_fmt$ColName[3] <- "BlutanteilAnimal"
 ```
 
 2. Rows 4-6 are a duplicate of rows 7-9
 
-```{r}
+```{r, eval=FALSE}
 tbl_gal_fmt <- tbl_gal_fmt %>% slice(-(4:6))
-tbl_gal_fmt
 ```
 
 3. Row 6 corresponds to the blood content of the sire
 
-```{r}
+```{r, eval=FALSE}
 tbl_gal_fmt$ColName[6] <- "BlutanteilVater"
 ```
 
 4. Row 9 corresponds to duration of pregancy
 
-```{r}
+```{r, eval=FALSE}
 tbl_gal_fmt$ColName[9] <- "Traechtigkeitsdauer"
+```
+
+The above steps can also be done with the following function call
+
+```{r}
+tbl_gal_fmt <- improve_fmt(ptbl_fmt = tbl_gal_fmt,
+                           pvec_del_row_idx = 4:6,
+                           ptbl_col_rename = tibble::tibble(RowIndex = c(3,6,9),
+                                                            NewName=c("BlutanteilAnimal", 
+                                                                      "BlutanteilVater", 
+                                                                      "Traechtigkeitsdauer")))
+
 ```
 
 
 # Check
 
 ```{r}
-tbl_gal_fmt
+knitr::kable(tbl_gal_fmt)
 ```
 
 
 # Cumulative Position
 
 ```{r}
-tbl_gal_fmt <- tbl_gal_fmt %>% bind_cols(CumNrPos = cumsum(tbl_gal_fmt$NrPos))
+tbl_gal_fmt_ext <- tbl_gal_fmt %>% bind_cols(CumNrPos = cumsum(tbl_gal_fmt$NrPos))
 ```
 
 
 # Check
 
 ```{r}
-tbl_gal_fmt
+knitr::kable(tbl_gal_fmt_ext)
 ```
 
 
@@ -91,18 +102,34 @@ Write an output-fmt file.
 ```{r}
 s_gal_fmt_file <- "gal_check.fmt"
 if (file.exists(s_gal_fmt_file)) unlink(s_gal_fmt_file)
-n_nr_fmt_rec <- nrow(tbl_gal_fmt)
+n_nr_fmt_rec <- nrow(tbl_gal_fmt_ext)
 # start with first line outside of loop
-cat("# ", tbl_gal_fmt$ColName[1], "\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-cat("[1-", tbl_gal_fmt$CumNrPos[1], "]\n", sep = "", file = s_gal_fmt_file, append = TRUE)
+cat("# ", tbl_gal_fmt_ext$ColName[1], "\n", sep = "", file = s_gal_fmt_file, append = TRUE)
+cat("[1-", tbl_gal_fmt_ext$CumNrPos[1], "]\n", sep = "", file = s_gal_fmt_file, append = TRUE)
 cat("data_required=True \n\n", sep = "", file = s_gal_fmt_file, append = TRUE)
 if (n_nr_fmt_rec > 1){
   for (idx in 2:n_nr_fmt_rec){
-    cat("# ", tbl_gal_fmt$ColName[idx], "\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-    cat("[", tbl_gal_fmt$CumNrPos[idx-1]+1, "-", tbl_gal_fmt$CumNrPos[idx], "]\n", sep = "", file = s_gal_fmt_file, append = TRUE)
+    cat("# ", tbl_gal_fmt_ext$ColName[idx], "\n", sep = "", file = s_gal_fmt_file, append = TRUE)
+    cat("[", tbl_gal_fmt_ext$CumNrPos[idx-1]+1, "-", tbl_gal_fmt_ext$CumNrPos[idx], "]\n", sep = "", file = s_gal_fmt_file, append = TRUE)
     cat("data_required=True \n\n", sep = "", file = s_gal_fmt_file, append = TRUE)
   }
   
 }
 ```
 
+The same output can be produced by the following function call.
+
+```{r}
+output_fmt(ps_fmt_outfile = s_gal_fmt_file, ptbl_fmt = tbl_gal_fmt)
+```
+
+The first few lines of the produced file is
+
+```{r}
+cat(head(readLines(s_gal_fmt_file), n=10L), sep = "\n")
+```
+
+
+```{r, echo=FALSE, results='asis'}
+cat(rmdhelp::get_latest_change(), "\n")
+```

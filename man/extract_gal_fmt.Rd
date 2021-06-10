@@ -34,10 +34,7 @@ on already existing fmt-input files.
 \examples{
 \dontrun{
 s_sql_prg_path <- system.file("extdata", "zws_gal_pgb.sql", package = "qfmtchk")
-extract_gal_fmt(ps_sql_prg_path = s_sql_prg_path)
-ps_sql_prg_path="/Users/pvr/Data/Projects/argus_sql/trunk/Argus/zws_gal_pgb.sql"
-ps_sql_exp_routine="ExportGAL"
-ps_exp_pattern = "PA_EXP.sFormat"
+tbl_gal_fmt <- extract_gal_fmt(ps_sql_prg_path = s_sql_prg_path)
 }
 
 }

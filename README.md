@@ -28,15 +28,28 @@ library(qfmtchk)
 ## basic example code
 s_sql_prg_path <- system.file("extdata", "zws_gal_pgb.sql", package = "qfmtchk")
 tbl_gal_fmt <- extract_gal_fmt(ps_sql_prg_path = s_sql_prg_path)
-#> Registered S3 methods overwritten by 'tibble':
-#>   method     from  
-#>   format.tbl pillar
-#>   print.tbl  pillar
 ```
 
 The above produces a tibble with all column names and the width of the
-columns.
+columns. This tibble can be improved and corrected at the users
+convenience with the following command
+
+``` r
+tbl_gal_fmt <- improve_fmt(ptbl_fmt = tbl_gal_fmt,
+                           pvec_del_row_idx = 4:6,
+                           ptbl_col_rename = tibble::tibble(RowIndex = c(3,6,9),
+                                                            NewName=c("BlutanteilAnimal", 
+                                                                      "BlutanteilVater", 
+                                                                      "Traechtigkeitsdauer")))
+```
+
+The improved fmt-tibble can be written to an fmt-file using
+
+``` r
+s_gal_fmt_file <- "gal_check.fmt"
+output_fmt(ps_fmt_outfile = s_gal_fmt_file, ptbl_fmt = tbl_gal_fmt)
+```
 
 ------------------------------------------------------------------------
 
-*Latest Changes: 2021-06-10 12:00:43 (pvr)*
+*Latest Changes: 2021-06-10 17:14:55 (pvr)*
