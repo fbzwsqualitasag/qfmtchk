@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
+The website of `qfmtchk` is available at:  https://fbzwsqualitasag.github.io/qfmtchk/
+
 The goal of qfmtchk is to provide functionalities related to checks and verification of input data for the genetic evaluations at Qualitas AG.
 
 ## Installation

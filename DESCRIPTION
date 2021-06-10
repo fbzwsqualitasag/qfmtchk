@@ -11,6 +11,8 @@ Description: Input data for genetic evaluations is expected to
     evaluation programs. Different features that help to provide 
     the checks are collected in this package.
 License: MIT + file LICENSE
+URL: https://fbzwsqualitasag.github.io/qfmtchk/
+BugReports: https://github.com/fbzwsqualitasag/qfmtchk/issues
 Encoding: UTF-8
 Language: en
 LazyData: true

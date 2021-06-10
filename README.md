@@ -6,6 +6,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+The website of `qfmtchk` is available at:
+<https://fbzwsqualitasag.github.io/qfmtchk/>
+
 The goal of qfmtchk is to provide functionalities related to checks and
 verification of input data for the genetic evaluations at Qualitas AG.
 
@@ -52,4 +55,4 @@ output_fmt(ps_fmt_outfile = s_gal_fmt_file, ptbl_fmt = tbl_gal_fmt)
 
 ------------------------------------------------------------------------
 
-*Latest Changes: 2021-06-10 17:14:55 (pvr)*
+*Latest Changes: 2021-06-10 17:22:00 (pvr)*
