@@ -1,6 +1,3 @@
-#' ---
-#' title: Improvement Functions for Format Specification
-#' ---
 #'
 #' @title Improve Format Specification
 #'

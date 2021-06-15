@@ -7,17 +7,14 @@
 output_fmt(ps_fmt_outfile, ptbl_fmt)
 }
 \arguments{
-\item{ptbl_fmt}{}
+\item{ps_fmt_outfile}{output file for fmt information}
+
+\item{ptbl_fmt}{tibble containing fmt information}
 }
 \description{
 The tibble with the fmt information consisting of column names and
 positions is taken and converted into an input file for the chckfwf
 program.
-}
-\details{
-\subsection{title: Output FMT Input Files
-date:  2021-06-10}{
-}
 }
 \examples{
 \dontrun{

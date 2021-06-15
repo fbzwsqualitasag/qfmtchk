@@ -22,11 +22,7 @@ beginning and the end of the specified routine name (ps_sql_exp_routine)
 is investigated for the pattern given by ps_exp_pattern.
 }
 \details{
-\subsection{title: Extract Format Definition From Export Program
-date:  2021-10-09}{
-
 The format extraction works only, if the export routine is written in
 a specific way. If these assumptions are not met, the extraction does
 not work.
-}
 }

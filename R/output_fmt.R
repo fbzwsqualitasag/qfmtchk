@@ -1,7 +1,3 @@
-#' ---
-#' title: Output FMT Input Files
-#' date:  2021-06-10
-#' ---
 #'
 #' @title Write FMT Info To File
 #'
@@ -10,8 +6,8 @@
 #' positions is taken and converted into an input file for the chckfwf
 #' program.
 #'
-#' @param ps_fmt_outfile
-#' @param ptbl_fmt
+#' @param ps_fmt_outfile output file for fmt information
+#' @param ptbl_fmt tibble containing fmt information
 #'
 #' @examples
 #' \dontrun{
@@ -25,22 +21,15 @@ output_fmt <- function(ps_fmt_outfile, ptbl_fmt){
     cat(" * FOUND output FMT File: ", ps_fmt_outfile, " ==> delete it ...\n")
     unlink(ps_fmt_outfile)
   }
-  # compute the cumulative positions in ptbl_fmt
-  tbl_fmt <- dplyr::bind_cols(ptbl_fmt, tibble::tibble(CumNrPos = cumsum(ptbl_fmt$NrPos)))
   # number of records in fmt-tibble
-  n_nr_fmt_rec <- nrow(tbl_fmt)
+  n_nr_fmt_rec <- nrow(ptbl_fmt)
   # start with first line outside of loop
-  cat("# ", tbl_fmt$ColName[1], "\n", sep = "", file = ps_fmt_outfile, append = TRUE)
-  cat("[1-", tbl_fmt$CumNrPos[1], "]\n", sep = "", file = ps_fmt_outfile, append = TRUE)
-  cat("data_required=True \n\n", sep = "", file = ps_fmt_outfile, append = TRUE)
-  if (n_nr_fmt_rec > 1){
-    for (idx in 2:n_nr_fmt_rec){
-      cat("# ", tbl_fmt$ColName[idx], "\n", sep = "", file = ps_fmt_outfile, append = TRUE)
-      cat("[", tbl_fmt$CumNrPos[idx-1]+1, "-", tbl_fmt$CumNrPos[idx], "]\n", sep = "", file = ps_fmt_outfile, append = TRUE)
-      cat("data_required=True \n\n", sep = "", file = ps_fmt_outfile, append = TRUE)
-    }
-
+  for (idx in 1:n_nr_fmt_rec){
+    cat("# ", ptbl_fmt$ColName[idx], "\n", sep = "", file = ps_fmt_outfile, append = TRUE)
+    cat("[", ptbl_fmt$StartPos[idx], "-", ptbl_fmt$EndPos[idx], "]\n", sep = "", file = ps_fmt_outfile, append = TRUE)
+    cat("data_required=True \n\n", sep = "", file = ps_fmt_outfile, append = TRUE)
   }
+
   return(invisible(TRUE))
 }
 

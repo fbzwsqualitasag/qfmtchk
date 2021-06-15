@@ -28,15 +28,12 @@ The improvement consists of removing rows from the fmt tibble, changing
 the name of columns or of adding more rows to the fmt tibble.
 }
 \details{
-\subsection{title: Improvement Functions for Format Specification}{
-
 The vector of row indices for the rows to be deleted can be specified with
 a simple numberic vector. The list of column names to be renamed can be
 specified with a tibble (ptbl_col_rename) with a column RowIndex and a
 second column NewName where the first gives the row index where the column
 name should be renamed and the second column contains the new column
 name.
-}
 }
 \examples{
 \dontrun{

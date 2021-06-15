@@ -1,0 +1,65 @@
+---
+title: "Format Information For Carcass Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Format Information For Carcass Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(qfmtchk)
+```
+
+# Disclaimer
+This vignette shows how to extract data formats from the import routine of the carcass data (KLDAT) obtained from the Identitas database (TVD).
+
+
+# Reading SQL Program
+In a first step, the SQL statements from the import routine are read. This is done internally in the extraction function. For reasons of checking, the import routine is read with the following statement
+
+```{r, message=FALSE, warning=FALSE}
+s_sql_prg <- system.file("extdata", "dsch_imp_3_pgb.sql", package = "qfmtchk")
+s_sql_routine <- "ImportSchlachtdatenTvd"
+s_exp_pattern <- "rowSTV.STV"
+vec_prg <- qfmtchk:::read_sql_prg(ps_sql_prg_path    = s_sql_prg,
+                                  ps_sql_exp_routine = s_sql_routine,
+                                  ps_exp_pattern     = s_exp_pattern)
+head(vec_prg)
+```
+
+
+# Format Extraction
+The format information can be extracted into a tibble with 
+
+```{r, message=FALSE, warning=FALSE}
+tbl_kldat_fmt <- extract_kldat_fmt(ps_sql_prg_path = s_sql_prg)
+knitr::kable(tbl_kldat_fmt)
+```
+
+
+# Output
+As it seams with the above extracted format information, improvements are not required. Hence, we can directly write the fmt information to a file.
+
+```{r}
+s_kldat_fmt_file <- "kldat_check.fmt"
+output_fmt(ps_fmt_outfile = s_kldat_fmt_file, ptbl_fmt = tbl_kldat_fmt)
+```
+
+The following chunk is checking the content of the created file
+
+```{r}
+cat(head(readLines(s_kldat_fmt_file), n=10L), sep = "\n")
+```
+
+
+```{r, echo=FALSE, results='asis'}
+cat(rmdhelp::get_latest_change(), "\n")
+```

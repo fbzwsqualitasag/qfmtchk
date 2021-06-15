@@ -25,11 +25,23 @@ Tests and experiments in coming up with format files are described.
 
 
 # SQL Program
-The SQL export program can be used as one possibel source of information. The following call produces a first table of columns and positions.
+The SQL export program can be used as one possible source of information. The following call produces a first table of columns and positions. The SQL program can be read internally using the following statement.
+
+```{r, message=FALSE, warning=FALSE}
+s_sql_export_prg <- system.file("extdata", "zws_gal_pgb.sql", package = "qfmtchk")
+s_sql_routine <- "ExportGAL"
+s_exp_pattern <- "PA_EXP.sFormat"
+vec_prg <- qfmtchk:::read_sql_prg(ps_sql_prg_path    = s_sql_export_prg,
+                                  ps_sql_exp_routine = s_sql_routine,
+                                  ps_exp_pattern     = s_exp_pattern)
+head(vec_prg)
+```
+
+
+The function `extract_gal_fmt()` can be used to directly extract the format information.
 
 
 ```{r, warning=FALSE, message=FALSE}
-s_sql_export_prg <- "/Users/pvr/Data/Projects/argus_sql/trunk/Argus/zws_gal_pgb.sql"
 tbl_gal_fmt <- extract_gal_fmt(ps_sql_prg_path = s_sql_export_prg)
 tbl_gal_fmt
 ```
@@ -82,19 +94,6 @@ knitr::kable(tbl_gal_fmt)
 ```
 
 
-# Cumulative Position
-
-```{r}
-tbl_gal_fmt_ext <- tbl_gal_fmt %>% bind_cols(CumNrPos = cumsum(tbl_gal_fmt$NrPos))
-```
-
-
-# Check
-
-```{r}
-knitr::kable(tbl_gal_fmt_ext)
-```
-
 
 # Output
 Write an output-fmt file.
@@ -102,18 +101,12 @@ Write an output-fmt file.
 ```{r}
 s_gal_fmt_file <- "gal_check.fmt"
 if (file.exists(s_gal_fmt_file)) unlink(s_gal_fmt_file)
-n_nr_fmt_rec <- nrow(tbl_gal_fmt_ext)
+n_nr_fmt_rec <- nrow(tbl_gal_fmt)
 # start with first line outside of loop
-cat("# ", tbl_gal_fmt_ext$ColName[1], "\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-cat("[1-", tbl_gal_fmt_ext$CumNrPos[1], "]\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-cat("data_required=True \n\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-if (n_nr_fmt_rec > 1){
-  for (idx in 2:n_nr_fmt_rec){
-    cat("# ", tbl_gal_fmt_ext$ColName[idx], "\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-    cat("[", tbl_gal_fmt_ext$CumNrPos[idx-1]+1, "-", tbl_gal_fmt_ext$CumNrPos[idx], "]\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-    cat("data_required=True \n\n", sep = "", file = s_gal_fmt_file, append = TRUE)
-  }
-  
+for (idx in 1:n_nr_fmt_rec){
+  cat("# ", tbl_gal_fmt$ColName[idx], "\n", sep = "", file = s_gal_fmt_file, append = TRUE)
+  cat("[", tbl_gal_fmt$StartPos[idx], "-", tbl_gal_fmt$EndPos[idx], "]\n", sep = "", file = s_gal_fmt_file, append = TRUE)
+  cat("data_required=True \n\n", sep = "", file = s_gal_fmt_file, append = TRUE)
 }
 ```
 
