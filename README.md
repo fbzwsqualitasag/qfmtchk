@@ -55,4 +55,4 @@ output_fmt(ps_fmt_outfile = s_gal_fmt_file, ptbl_fmt = tbl_gal_fmt)
 
 ------------------------------------------------------------------------
 
-*Latest Changes: 2021-06-10 17:22:00 (pvr)*
+*Latest Changes: 2021-06-15 18:55:22 (pvr)*

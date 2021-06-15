@@ -65,6 +65,7 @@ unlink(s_gal_fmt_file)
 ```
 
 
+
 ```{r, echo=FALSE, results='asis'}
 cat(rmdhelp::get_latest_change(), "\n")
 ```

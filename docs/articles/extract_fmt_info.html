@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">qfmtchk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -56,13 +56,23 @@
 <li>
       <a href="../articles/extract_fmt_info.html">Extract Format Information From Export Program</a>
     </li>
+    <li>
+      <a href="../articles/kldat_fmt_info.html">Format Information For Carcass Data</a>
+    </li>
   </ul>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/fbzwsqualitasag/qfmtchk/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -78,7 +88,7 @@
       <h1 data-toc-skip>Extract Format Information From Export Program</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/fbzwsqualitasag/qfmtchk/blob/master/vignettes/extract_fmt_info.Rmd"><code>vignettes/extract_fmt_info.Rmd</code></a></small>
       <div class="hidden name"><code>extract_fmt_info.Rmd</code></div>
 
     </div>
@@ -95,23 +105,36 @@
 <div id="sql-program" class="section level1">
 <h1 class="hasAnchor">
 <a href="#sql-program" class="anchor"></a>SQL Program</h1>
-<p>The SQL export program can be used as one possibel source of information. The following call produces a first table of columns and positions.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">s_sql_export_prg</span> <span class="kw">&lt;-</span> <span class="st">"/Users/pvr/Data/Projects/argus_sql/trunk/Argus/zws_gal_pgb.sql"</span>
-<span class="no">tbl_gal_fmt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extract_gal_fmt.html">extract_gal_fmt</a></span>(<span class="kw">ps_sql_prg_path</span> <span class="kw">=</span> <span class="no">s_sql_export_prg</span>)
+<p>The SQL export program can be used as one possible source of information. The following call produces a first table of columns and positions. The SQL program can be read internally using the following statement.</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">s_sql_export_prg</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata"</span>, <span class="st">"zws_gal_pgb.sql"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"qfmtchk"</span>)
+<span class="no">s_sql_routine</span> <span class="kw">&lt;-</span> <span class="st">"ExportGAL"</span>
+<span class="no">s_exp_pattern</span> <span class="kw">&lt;-</span> <span class="st">"PA_EXP.sFormat"</span>
+<span class="no">vec_prg</span> <span class="kw">&lt;-</span> <span class="kw pkg">qfmtchk</span><span class="kw ns">:::</span><span class="fu"><a href="../reference/read_sql_prg.html">read_sql_prg</a></span>(<span class="kw">ps_sql_prg_path</span>    <span class="kw">=</span> <span class="no">s_sql_export_prg</span>,
+                                  <span class="kw">ps_sql_exp_routine</span> <span class="kw">=</span> <span class="no">s_sql_routine</span>,
+                                  <span class="kw">ps_exp_pattern</span>     <span class="kw">=</span> <span class="no">s_exp_pattern</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">vec_prg</span>)
+<span class="co">#&gt; [1] "                sOutput :=            PA_EXP.sFormat(rowTier.IDANIMAL                                 ,10,PA_EXP.RECHTS,' ');"</span>
+<span class="co">#&gt; [2] "                sOutput := sOutput || PA_EXP.sFormat(TO_CHAR(rowTier.ANIDATENAISSANCE,'YY')           ,3 ,PA_EXP.RECHTS,' ');"</span>
+<span class="co">#&gt; [3] "                sOutput := sOutput || PA_EXP.sFormat(PA_ANI.nGetBlutanteilBS64(rowTier.IDANIMAL)      ,3 ,PA_EXP.RECHTS,' ');"</span>
+<span class="co">#&gt; [4] "                  sOutput := sOutput || PA_EXP.sFormat(rowGAL.IDVATER2                                ,10,PA_EXP.RECHTS,' ');"</span>
+<span class="co">#&gt; [5] "                  sOutput := sOutput || PA_EXP.sFormat(TO_CHAR(dtGebDatETVater,'YY')                  ,3 ,PA_EXP.RECHTS,' ');"</span>
+<span class="co">#&gt; [6] "                  sOutput := sOutput || PA_EXP.sFormat(PA_ANI.nGetBlutanteilBS64(rowGAL.IDVATER2)     ,3 ,PA_EXP.RECHTS,' ');"</span></pre></body></html></div>
+<p>The function <code><a href="../reference/extract_gal_fmt.html">extract_gal_fmt()</a></code> can be used to directly extract the format information.</p>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extract_gal_fmt.html">extract_gal_fmt</a></span>(<span class="kw">ps_sql_prg_path</span> <span class="kw">=</span> <span class="no">s_sql_export_prg</span>)
 <span class="no">tbl_gal_fmt</span>
-<span class="co">#&gt; # A tibble: 34 x 2</span>
-<span class="co">#&gt;    ColName                   NrPos</span>
-<span class="co">#&gt;    &lt;chr&gt;                     &lt;int&gt;</span>
-<span class="co">#&gt;  1 rowTier.IDANIMAL             10</span>
-<span class="co">#&gt;  2 rowTier.ANIDATENAISSANCE      3</span>
-<span class="co">#&gt;  3 PA_ANI.nGetBlutanteilBS64     3</span>
-<span class="co">#&gt;  4 rowGAL.IDVATER2              10</span>
-<span class="co">#&gt;  5 dtGebDatETVater               3</span>
-<span class="co">#&gt;  6 PA_ANI.nGetBlutanteilBS64     3</span>
-<span class="co">#&gt;  7 rowGAL.IDVATER               10</span>
-<span class="co">#&gt;  8 rowGAL.GEBDATVATER            3</span>
-<span class="co">#&gt;  9 PA_ANI.nGetBlutanteilBS64     3</span>
-<span class="co">#&gt; 10 rowGAL.LACNO                  2</span>
+<span class="co">#&gt; # A tibble: 34 x 3</span>
+<span class="co">#&gt;    ColName                   StartPos EndPos</span>
+<span class="co">#&gt;    &lt;chr&gt;                        &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 rowTier.IDANIMAL                 1     10</span>
+<span class="co">#&gt;  2 rowTier.ANIDATENAISSANCE        11     13</span>
+<span class="co">#&gt;  3 PA_ANI.nGetBlutanteilBS64       14     16</span>
+<span class="co">#&gt;  4 rowGAL.IDVATER2                 17     26</span>
+<span class="co">#&gt;  5 dtGebDatETVater                 27     29</span>
+<span class="co">#&gt;  6 PA_ANI.nGetBlutanteilBS64       30     32</span>
+<span class="co">#&gt;  7 rowGAL.IDVATER                  33     42</span>
+<span class="co">#&gt;  8 rowGAL.GEBDATVATER              43     45</span>
+<span class="co">#&gt;  9 PA_ANI.nGetBlutanteilBS64       46     48</span>
+<span class="co">#&gt; 10 rowGAL.LACNO                    49     50</span>
 <span class="co">#&gt; # … with 24 more rows</span></pre></body></html></div>
 </div>
 <div id="improvements" class="section level1">
@@ -121,21 +144,21 @@
 <ol style="list-style-type: decimal">
 <li>Row 3 contains the blood content of the animal</li>
 </ol>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span>$<span class="no">ColName</span>[<span class="fl">3</span>] <span class="kw">&lt;-</span> <span class="st">"BlutanteilAnimal"</span></pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span>$<span class="no">ColName</span>[<span class="fl">3</span>] <span class="kw">&lt;-</span> <span class="st">"BlutanteilAnimal"</span></pre></body></html></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Rows 4-6 are a duplicate of rows 7-9</li>
 </ol>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span> <span class="kw">&lt;-</span> <span class="no">tbl_gal_fmt</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(-(<span class="fl">4</span>:<span class="fl">6</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span> <span class="kw">&lt;-</span> <span class="no">tbl_gal_fmt</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span>(-(<span class="fl">4</span>:<span class="fl">6</span>))</pre></body></html></div>
 <ol start="3" style="list-style-type: decimal">
 <li>Row 6 corresponds to the blood content of the sire</li>
 </ol>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span>$<span class="no">ColName</span>[<span class="fl">6</span>] <span class="kw">&lt;-</span> <span class="st">"BlutanteilVater"</span></pre></body></html></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span>$<span class="no">ColName</span>[<span class="fl">6</span>] <span class="kw">&lt;-</span> <span class="st">"BlutanteilVater"</span></pre></body></html></div>
 <ol start="4" style="list-style-type: decimal">
 <li>Row 9 corresponds to duration of pregancy</li>
 </ol>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span>$<span class="no">ColName</span>[<span class="fl">9</span>] <span class="kw">&lt;-</span> <span class="st">"Traechtigkeitsdauer"</span></pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span>$<span class="no">ColName</span>[<span class="fl">9</span>] <span class="kw">&lt;-</span> <span class="st">"Traechtigkeitsdauer"</span></pre></body></html></div>
 <p>The above steps can also be done with the following function call</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/improve_fmt.html">improve_fmt</a></span>(<span class="kw">ptbl_fmt</span> <span class="kw">=</span> <span class="no">tbl_gal_fmt</span>,
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">tbl_gal_fmt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/improve_fmt.html">improve_fmt</a></span>(<span class="kw">ptbl_fmt</span> <span class="kw">=</span> <span class="no">tbl_gal_fmt</span>,
                            <span class="kw">pvec_del_row_idx</span> <span class="kw">=</span> <span class="fl">4</span>:<span class="fl">6</span>,
                            <span class="kw">ptbl_col_rename</span> <span class="kw">=</span> <span class="kw pkg">tibble</span><span class="kw ns">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span>(<span class="kw">RowIndex</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>,<span class="fl">6</span>,<span class="fl">9</span>),
                                                             <span class="kw">NewName</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"BlutanteilAnimal"</span>,
@@ -145,310 +168,168 @@
 <div id="check" class="section level1">
 <h1 class="hasAnchor">
 <a href="#check" class="anchor"></a>Check</h1>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">tbl_gal_fmt</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">tbl_gal_fmt</span>)</pre></body></html></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">ColName</th>
-<th align="right">NrPos</th>
+<th align="right">StartPos</th>
+<th align="right">EndPos</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">rowTier.IDANIMAL</td>
+<td align="right">1</td>
 <td align="right">10</td>
 </tr>
 <tr class="even">
 <td align="left">rowTier.ANIDATENAISSANCE</td>
-<td align="right">3</td>
-</tr>
-<tr class="odd">
-<td align="left">BlutanteilAnimal</td>
-<td align="right">3</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.IDVATER</td>
-<td align="right">10</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.GEBDATVATER</td>
-<td align="right">3</td>
-</tr>
-<tr class="even">
-<td align="left">BlutanteilVater</td>
-<td align="right">3</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.LACNO</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">nKalbealterKuh</td>
-<td align="right">5</td>
-</tr>
-<tr class="odd">
-<td align="left">Traechtigkeitsdauer</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.LACDATEVELAGE</td>
-<td align="right">4</td>
-</tr>
-<tr class="odd">
-<td align="left">sInfoBtrNr</td>
-<td align="right">7</td>
-</tr>
-<tr class="even">
-<td align="left">nInfoBtrStufe</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">sInfoBtrRegion</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DERVELCODEAVORTE</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.ANISEX</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DERVELCODEJUMEAU</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.DERVELCODEMORT</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DER_FRUEHGEBURT_ID</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.DERVELCODEVELAGE</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DERVELCODEPOSITION</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.DERVELPOIDSNAISSANCE</td>
-<td align="right">3</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DER_ZITZEN</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.ERBFEHLER</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.IDANIMAL</td>
-<td align="right">10</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.LACDATEVELAGE</td>
-<td align="right">8</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.INSDATE</td>
-<td align="right">8</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.INSEM_INSEMTYP_ID</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">nCodeStierEinsatz</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.IDMUTTER2</td>
-<td align="right">10</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.ANI_TVDABGANGSDATUM</td>
-<td align="right">8</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.ANI_TVDABGANG_ID</td>
-<td align="right">2</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="cumulative-position" class="section level1">
-<h1 class="hasAnchor">
-<a href="#cumulative-position" class="anchor"></a>Cumulative Position</h1>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">tbl_gal_fmt_ext</span> <span class="kw">&lt;-</span> <span class="no">tbl_gal_fmt</span> <span class="kw">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(<span class="kw">CumNrPos</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(<span class="no">tbl_gal_fmt</span>$<span class="no">NrPos</span>))</pre></body></html></div>
-</div>
-<div id="check-1" class="section level1">
-<h1 class="hasAnchor">
-<a href="#check-1" class="anchor"></a>Check</h1>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="no">tbl_gal_fmt_ext</span>)</pre></body></html></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">ColName</th>
-<th align="right">NrPos</th>
-<th align="right">CumNrPos</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">rowTier.IDANIMAL</td>
-<td align="right">10</td>
-<td align="right">10</td>
-</tr>
-<tr class="even">
-<td align="left">rowTier.ANIDATENAISSANCE</td>
-<td align="right">3</td>
+<td align="right">11</td>
 <td align="right">13</td>
 </tr>
 <tr class="odd">
 <td align="left">BlutanteilAnimal</td>
-<td align="right">3</td>
+<td align="right">14</td>
 <td align="right">16</td>
 </tr>
 <tr class="even">
 <td align="left">rowGAL.IDVATER</td>
-<td align="right">10</td>
-<td align="right">26</td>
+<td align="right">33</td>
+<td align="right">42</td>
 </tr>
 <tr class="odd">
 <td align="left">rowGAL.GEBDATVATER</td>
-<td align="right">3</td>
-<td align="right">29</td>
+<td align="right">43</td>
+<td align="right">45</td>
 </tr>
 <tr class="even">
 <td align="left">BlutanteilVater</td>
-<td align="right">3</td>
-<td align="right">32</td>
+<td align="right">46</td>
+<td align="right">48</td>
 </tr>
 <tr class="odd">
 <td align="left">rowGAL.LACNO</td>
-<td align="right">2</td>
-<td align="right">34</td>
+<td align="right">49</td>
+<td align="right">50</td>
 </tr>
 <tr class="even">
 <td align="left">nKalbealterKuh</td>
-<td align="right">5</td>
-<td align="right">39</td>
+<td align="right">51</td>
+<td align="right">55</td>
 </tr>
 <tr class="odd">
 <td align="left">Traechtigkeitsdauer</td>
-<td align="right">4</td>
-<td align="right">43</td>
+<td align="right">56</td>
+<td align="right">59</td>
 </tr>
 <tr class="even">
 <td align="left">rowGAL.LACDATEVELAGE</td>
-<td align="right">4</td>
-<td align="right">47</td>
+<td align="right">60</td>
+<td align="right">63</td>
 </tr>
 <tr class="odd">
 <td align="left">sInfoBtrNr</td>
-<td align="right">7</td>
-<td align="right">54</td>
-</tr>
-<tr class="even">
-<td align="left">nInfoBtrStufe</td>
-<td align="right">2</td>
-<td align="right">56</td>
-</tr>
-<tr class="odd">
-<td align="left">sInfoBtrRegion</td>
-<td align="right">2</td>
-<td align="right">58</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DERVELCODEAVORTE</td>
-<td align="right">2</td>
-<td align="right">60</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.ANISEX</td>
-<td align="right">2</td>
-<td align="right">62</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DERVELCODEJUMEAU</td>
-<td align="right">2</td>
 <td align="right">64</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.DERVELCODEMORT</td>
-<td align="right">2</td>
-<td align="right">66</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.DER_FRUEHGEBURT_ID</td>
-<td align="right">2</td>
-<td align="right">68</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.DERVELCODEVELAGE</td>
-<td align="right">2</td>
 <td align="right">70</td>
 </tr>
 <tr class="even">
-<td align="left">rowGAL.DERVELCODEPOSITION</td>
-<td align="right">2</td>
+<td align="left">nInfoBtrStufe</td>
+<td align="right">71</td>
 <td align="right">72</td>
 </tr>
 <tr class="odd">
-<td align="left">rowGAL.DERVELPOIDSNAISSANCE</td>
-<td align="right">3</td>
+<td align="left">sInfoBtrRegion</td>
+<td align="right">73</td>
+<td align="right">74</td>
+</tr>
+<tr class="even">
+<td align="left">rowGAL.DERVELCODEAVORTE</td>
 <td align="right">75</td>
+<td align="right">76</td>
+</tr>
+<tr class="odd">
+<td align="left">rowGAL.ANISEX</td>
+<td align="right">77</td>
+<td align="right">78</td>
+</tr>
+<tr class="even">
+<td align="left">rowGAL.DERVELCODEJUMEAU</td>
+<td align="right">79</td>
+<td align="right">80</td>
+</tr>
+<tr class="odd">
+<td align="left">rowGAL.DERVELCODEMORT</td>
+<td align="right">81</td>
+<td align="right">82</td>
+</tr>
+<tr class="even">
+<td align="left">rowGAL.DER_FRUEHGEBURT_ID</td>
+<td align="right">83</td>
+<td align="right">84</td>
+</tr>
+<tr class="odd">
+<td align="left">rowGAL.DERVELCODEVELAGE</td>
+<td align="right">85</td>
+<td align="right">86</td>
+</tr>
+<tr class="even">
+<td align="left">rowGAL.DERVELCODEPOSITION</td>
+<td align="right">87</td>
+<td align="right">88</td>
+</tr>
+<tr class="odd">
+<td align="left">rowGAL.DERVELPOIDSNAISSANCE</td>
+<td align="right">89</td>
+<td align="right">91</td>
 </tr>
 <tr class="even">
 <td align="left">rowGAL.DER_ZITZEN</td>
-<td align="right">2</td>
-<td align="right">77</td>
+<td align="right">92</td>
+<td align="right">93</td>
 </tr>
 <tr class="odd">
 <td align="left">rowGAL.ERBFEHLER</td>
-<td align="right">2</td>
-<td align="right">79</td>
+<td align="right">94</td>
+<td align="right">95</td>
 </tr>
 <tr class="even">
 <td align="left">rowGAL.IDANIMAL</td>
-<td align="right">10</td>
-<td align="right">89</td>
-</tr>
-<tr class="odd">
-<td align="left">rowGAL.LACDATEVELAGE</td>
-<td align="right">8</td>
-<td align="right">97</td>
-</tr>
-<tr class="even">
-<td align="left">rowGAL.INSDATE</td>
-<td align="right">8</td>
+<td align="right">96</td>
 <td align="right">105</td>
 </tr>
 <tr class="odd">
+<td align="left">rowGAL.LACDATEVELAGE</td>
+<td align="right">106</td>
+<td align="right">113</td>
+</tr>
+<tr class="even">
+<td align="left">rowGAL.INSDATE</td>
+<td align="right">114</td>
+<td align="right">121</td>
+</tr>
+<tr class="odd">
 <td align="left">rowGAL.INSEM_INSEMTYP_ID</td>
-<td align="right">2</td>
-<td align="right">107</td>
+<td align="right">122</td>
+<td align="right">123</td>
 </tr>
 <tr class="even">
 <td align="left">nCodeStierEinsatz</td>
-<td align="right">2</td>
-<td align="right">109</td>
+<td align="right">124</td>
+<td align="right">125</td>
 </tr>
 <tr class="odd">
 <td align="left">rowGAL.IDMUTTER2</td>
-<td align="right">10</td>
-<td align="right">119</td>
+<td align="right">126</td>
+<td align="right">135</td>
 </tr>
 <tr class="even">
 <td align="left">rowGAL.ANI_TVDABGANGSDATUM</td>
-<td align="right">8</td>
-<td align="right">127</td>
+<td align="right">136</td>
+<td align="right">143</td>
 </tr>
 <tr class="odd">
 <td align="left">rowGAL.ANI_TVDABGANG_ID</td>
-<td align="right">2</td>
-<td align="right">129</td>
+<td align="right">144</td>
+<td align="right">145</td>
 </tr>
 </tbody>
 </table>
@@ -457,26 +338,20 @@
 <h1 class="hasAnchor">
 <a href="#output" class="anchor"></a>Output</h1>
 <p>Write an output-fmt file.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">s_gal_fmt_file</span> <span class="kw">&lt;-</span> <span class="st">"gal_check.fmt"</span>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">s_gal_fmt_file</span> <span class="kw">&lt;-</span> <span class="st">"gal_check.fmt"</span>
 <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span>(<span class="no">s_gal_fmt_file</span>)) <span class="fu"><a href="https://rdrr.io/r/base/unlink.html">unlink</a></span>(<span class="no">s_gal_fmt_file</span>)
-<span class="no">n_nr_fmt_rec</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">tbl_gal_fmt_ext</span>)
+<span class="no">n_nr_fmt_rec</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">tbl_gal_fmt</span>)
 <span class="co"># start with first line outside of loop</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"# "</span>, <span class="no">tbl_gal_fmt_ext</span>$<span class="no">ColName</span>[<span class="fl">1</span>], <span class="st">"\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"[1-"</span>, <span class="no">tbl_gal_fmt_ext</span>$<span class="no">CumNrPos</span>[<span class="fl">1</span>], <span class="st">"]\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"data_required=True \n\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="kw">if</span> (<span class="no">n_nr_fmt_rec</span> <span class="kw">&gt;</span> <span class="fl">1</span>){
-  <span class="kw">for</span> (<span class="no">idx</span> <span class="kw">in</span> <span class="fl">2</span>:<span class="no">n_nr_fmt_rec</span>){
-    <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"# "</span>, <span class="no">tbl_gal_fmt_ext</span>$<span class="no">ColName</span>[<span class="no">idx</span>], <span class="st">"\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-    <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"["</span>, <span class="no">tbl_gal_fmt_ext</span>$<span class="no">CumNrPos</span>[<span class="no">idx</span>-<span class="fl">1</span>]+<span class="fl">1</span>, <span class="st">"-"</span>, <span class="no">tbl_gal_fmt_ext</span>$<span class="no">CumNrPos</span>[<span class="no">idx</span>], <span class="st">"]\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-    <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"data_required=True \n\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-  }
-
+<span class="kw">for</span> (<span class="no">idx</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">n_nr_fmt_rec</span>){
+  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"# "</span>, <span class="no">tbl_gal_fmt</span>$<span class="no">ColName</span>[<span class="no">idx</span>], <span class="st">"\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"["</span>, <span class="no">tbl_gal_fmt</span>$<span class="no">StartPos</span>[<span class="no">idx</span>], <span class="st">"-"</span>, <span class="no">tbl_gal_fmt</span>$<span class="no">EndPos</span>[<span class="no">idx</span>], <span class="st">"]\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"data_required=True \n\n"</span>, <span class="kw">sep</span> <span class="kw">=</span> <span class="st">""</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">append</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 }</pre></body></html></div>
 <p>The same output can be produced by the following function call.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="../reference/output_fmt.html">output_fmt</a></span>(<span class="kw">ps_fmt_outfile</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">ptbl_fmt</span> <span class="kw">=</span> <span class="no">tbl_gal_fmt</span>)
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="../reference/output_fmt.html">output_fmt</a></span>(<span class="kw">ps_fmt_outfile</span> <span class="kw">=</span> <span class="no">s_gal_fmt_file</span>, <span class="kw">ptbl_fmt</span> <span class="kw">=</span> <span class="no">tbl_gal_fmt</span>)
 <span class="co">#&gt;  * FOUND output FMT File:  gal_check.fmt  ==&gt; delete it ...</span></pre></body></html></div>
 <p>The first few lines of the produced file is</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="no">s_gal_fmt_file</span>), <span class="kw">n</span><span class="kw">=</span><span class="fl">10L</span>), <span class="kw">sep</span> <span class="kw">=</span> <span class="st">"\n"</span>)
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="no">s_gal_fmt_file</span>), <span class="kw">n</span><span class="kw">=</span><span class="fl">10L</span>), <span class="kw">sep</span> <span class="kw">=</span> <span class="st">"\n"</span>)
 <span class="co">#&gt; # rowTier.IDANIMAL</span>
 <span class="co">#&gt; [1-10]</span>
 <span class="co">#&gt; data_required=True </span>
@@ -488,7 +363,7 @@
 <span class="co">#&gt; # BlutanteilAnimal</span>
 <span class="co">#&gt; [14-16]</span></pre></body></html></div>
 <hr>
-<p><em>Latest Changes: 2021-06-10 17:17:27 (pvr)</em></p>
+<p><em>Latest Changes: 2021-06-15 18:52:30 (pvr)</em></p>
 </div>
   </div>
 
