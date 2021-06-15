@@ -1,6 +1,6 @@
 Package: qfmtchk
 Title: Check Format of Input Data Used for Genetic Evaluations
-Version: 0.0.1
+Version: 0.0.1.9000
 Authors@R: 
     person(given = "Peter",
            family = "von Rohr",

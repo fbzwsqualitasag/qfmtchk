@@ -1,3 +1,7 @@
+# qfmtchk (development version)
+
+* Add functionality to produce fmt file for KLDAT
+
 # qfmtchk 0.0.1
 
 * First version producing GAL fmt file
