@@ -1,4 +1,4 @@
-# qfmtchk (development version)
+# qfmtchk 0.0.2
 
 * Add functionality to produce fmt file for KLDAT
 
