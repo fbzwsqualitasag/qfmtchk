@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">qfmtchk</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -112,12 +112,12 @@
                                   <span class="kw">ps_sql_exp_routine</span> <span class="kw">=</span> <span class="no">s_sql_routine</span>,
                                   <span class="kw">ps_exp_pattern</span>     <span class="kw">=</span> <span class="no">s_exp_pattern</span>)
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">vec_prg</span>)
-<span class="co">#&gt; [1] "          rowSTV.STV_STATUS         := 0;"                        </span>
-<span class="co">#&gt; [2] "          rowSTV.STV_BTRAKTSTAO     := TRIM(SUBSTR(sLine,6,10));" </span>
-<span class="co">#&gt; [3] "          rowSTV.STV_BTRTVD         := TRIM(SUBSTR(sLine,16,7));" </span>
-<span class="co">#&gt; [4] "          rowSTV.STV_MUTTERID       := TRIM(SUBSTR(sLine,23,14));"</span>
-<span class="co">#&gt; [5] "          rowSTV.STV_MUTTERRC       := TRIM(SUBSTR(sLine,37,3));" </span>
-<span class="co">#&gt; [6] "          rowSTV.STV_TIERNAME       := TRIM(SUBSTR(sLine,40,12));"</span></pre></body></html></div>
+<span class="co">#&gt; [1] "         rowSTV.STV_STATUS         := 0;"                        </span>
+<span class="co">#&gt; [2] "         rowSTV.STV_BTRAKTSTAO     := TRIM(SUBSTR(sLine,6,10));" </span>
+<span class="co">#&gt; [3] "         rowSTV.STV_BTRTVD         := TRIM(SUBSTR(sLine,16,7));" </span>
+<span class="co">#&gt; [4] "         rowSTV.STV_MUTTERID       := TRIM(SUBSTR(sLine,23,14));"</span>
+<span class="co">#&gt; [5] "         rowSTV.STV_MUTTERRC       := TRIM(SUBSTR(sLine,37,3));" </span>
+<span class="co">#&gt; [6] "         rowSTV.STV_TIERNAME       := TRIM(SUBSTR(sLine,40,12));"</span></pre></body></html></div>
 </div>
 <div id="format-extraction" class="section level1">
 <h1 class="hasAnchor">
@@ -305,8 +305,7 @@
 <a href="#output" class="anchor"></a>Output</h1>
 <p>As it seams with the above extracted format information, improvements are not required. Hence, we can directly write the fmt information to a file.</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">s_kldat_fmt_file</span> <span class="kw">&lt;-</span> <span class="st">"kldat_check.fmt"</span>
-<span class="fu"><a href="../reference/output_fmt.html">output_fmt</a></span>(<span class="kw">ps_fmt_outfile</span> <span class="kw">=</span> <span class="no">s_kldat_fmt_file</span>, <span class="kw">ptbl_fmt</span> <span class="kw">=</span> <span class="no">tbl_kldat_fmt</span>)
-<span class="co">#&gt;  * FOUND output FMT File:  kldat_check.fmt  ==&gt; delete it ...</span></pre></body></html></div>
+<span class="fu"><a href="../reference/output_fmt.html">output_fmt</a></span>(<span class="kw">ps_fmt_outfile</span> <span class="kw">=</span> <span class="no">s_kldat_fmt_file</span>, <span class="kw">ptbl_fmt</span> <span class="kw">=</span> <span class="no">tbl_kldat_fmt</span>)</pre></body></html></div>
 <p>The following chunk is checking the content of the created file</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="no">s_kldat_fmt_file</span>), <span class="kw">n</span><span class="kw">=</span><span class="fl">10L</span>), <span class="kw">sep</span> <span class="kw">=</span> <span class="st">"\n"</span>)
 <span class="co">#&gt; # STV_BTRAKTSTAO</span>
@@ -320,7 +319,7 @@
 <span class="co">#&gt; # STV_MUTTERID</span>
 <span class="co">#&gt; [23-36]</span></pre></body></html></div>
 <hr>
-<p><em>Latest Changes: 2021-06-15 18:57:33 (pvr)</em></p>
+<p><em>Latest Changes: 2021-06-16 08:41:33 (pvr)</em></p>
 </div>
   </div>
 
