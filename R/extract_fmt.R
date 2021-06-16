@@ -132,16 +132,16 @@ extract_kldat_fmt <- function(ps_sql_prg_path,
   # loop over vec_exp_prg
   for (idx in seq_along(vec_exp_prg)){
     # if not format information is available on the current line, continue
-    if (length(grep(pattern = ",", vec_prg[idx], fixed = TRUE)) == 0L) next
+    if (length(grep(pattern = ",", vec_exp_prg[idx], fixed = TRUE)) == 0L) next
     # split current line and get start position
-    n_start_pos <- as.integer(unlist(strsplit(vec_prg[idx], ",", fixed = TRUE))[2])
-    n_col_width <- unlist(strsplit(vec_prg[idx], ",", fixed = TRUE))[3]
+    n_start_pos <- as.integer(unlist(strsplit(vec_exp_prg[idx], ",", fixed = TRUE))[2])
+    n_col_width <- unlist(strsplit(vec_exp_prg[idx], ",", fixed = TRUE))[3]
     n_col_width <- as.numeric(unlist(strsplit(n_col_width, ")", fixed = TRUE))[1])
     n_end_pos <- n_start_pos + n_col_width - 1
 
 
     # determine column name
-    s_col_name <- unlist(strsplit(vec_prg[idx], ",", fixed = TRUE))[1]
+    s_col_name <- unlist(strsplit(vec_exp_prg[idx], ",", fixed = TRUE))[1]
     s_col_name <- unlist(strsplit(s_col_name, ':', fixed = TRUE))[1]
     s_col_name <- unlist(strsplit(s_col_name, '.', fixed = TRUE))[2]
     s_col_name <- gsub(pattern = " ", replacement = "", s_col_name)
