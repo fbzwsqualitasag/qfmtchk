@@ -1,44 +1,22 @@
 #'
-#' @title Improve Format Specification
+#' @title Delete Row from Format Tibble
 #'
 #' @description
-#' The improvement consists of removing rows from the fmt tibble, changing
-#' the name of columns or of adding more rows to the fmt tibble.
+#' Given a tibble with format information, a given number of rows
+#' are deleted. After the deletion, the start and the end positions
+#' must be re-computed
 #'
-#' @details
-#' The vector of row indices for the rows to be deleted can be specified with
-#' a simple numberic vector. The list of column names to be renamed can be
-#' specified with a tibble (ptbl_col_rename) with a column RowIndex and a
-#' second column NewName where the first gives the row index where the column
-#' name should be renamed and the second column contains the new column
-#' name.
+#' @param ptbl_imp_fmt given format tibble
+#' @param pvec_del_row_idx row indices for rows to be deleted
+#' @return tbl_imp_fmt format tibble without rows to be delted
 #'
-#' @param ptbl_fmt original format tibble which needs to be improved
-#' @param pvec_del_row_idx vector of row indices with rows to be deleted
-#' @param ptbl_col_rename tibble with row indices and new column names
-#' @param ptbl_fmt_add tibble with fmt columns to be added
-#' @return tbl_imp_fmt improved format tibble
-#'
-#' @examples
-#' \dontrun{
-#' improve_fmt(ptbl_fmt = tbl_gal_fmt, pvec_del_row_idx = c(4:6))
-#' improve_fmt(ptbl_fmt = tbl_gal_fmt,
-#'             pvec_del_row_idx = 4:6,
-#'             ptbl_col_rename = tibble::tibble(RowIndex = c(3,6,9),
-#'                                              NewName=c("BlutanteilAnimal",
-#'                                                        "BlutanteilVater",
-#'                                                        "Traechtigkeitsdauer")))
-#' }
-#'
-#' @export improve_fmt
-improve_fmt <- function(ptbl_fmt,
-                        pvec_del_row_idx = NULL,
-                        ptbl_col_rename  = NULL,
-                        ptbl_fmt_add     = NULL){
+#' @export delete_row
+delete_row <- function(ptbl_imp_fmt, pvec_del_row_idx) {
   # intialise result with original version, which makes the result the
   #  same as the input, if no changes are specified.
-  tbl_imp_fmt <- ptbl_fmt
+  tbl_imp_fmt <- ptbl_imp_fmt
   n_nr_rec <- nrow(tbl_imp_fmt)
+
   # check whether indices of rows must be specified
   if (is.null(pvec_del_row_idx)){
     answer <- "y"
@@ -46,7 +24,7 @@ improve_fmt <- function(ptbl_fmt,
       cat("Column Idx   | Column Name  |  Column Width\n")
       cat("=============|==============|==============\n")
       for (idx in 1:n_nr_rec){
-        cat(idx, " | ", tbl_imp_fmt$ColName[idx], " | ", tbl_imp_fmt$NrPos[idx], "\n")
+        cat(idx, " | ", tbl_imp_fmt$ColName[idx], " | ", tbl_imp_fmt$ColWidth[idx], "\n")
       }
       answer <- readline(prompt = " * Enter indices of rows to be deleted: ")
       n_del_idx <- as.integer(unlist(strsplit(answer, split = ",")))
@@ -58,6 +36,26 @@ improve_fmt <- function(ptbl_fmt,
     tbl_imp_fmt <- dplyr::slice(tbl_imp_fmt, -pvec_del_row_idx)
   }
 
+  # recompute positions
+  tbl_imp_fmt <- compute_positions(ptbl_fmt = tbl_imp_fmt)
+
+  # return result
+  return(tbl_imp_fmt)
+}
+
+
+#' Rename Format Check Variables
+#'
+#' @description
+#' For a given format tibble certain column variable names can be re-named.
+#'
+#' @param ptbl_imp_fmt format tibble with old variable names
+#' @param ptbl_col_rename tibble containing indices and new names
+#'
+#' @return tbl_imp_fmt format tibble with new names
+#' @export rename_variable
+rename_variable <- function(ptbl_imp_fmt, ptbl_col_rename) {
+  tbl_imp_fmt <- ptbl_imp_fmt
   # check whether the tibble with the column names to be changed is null
   if (is.null(ptbl_col_rename)){
     answer <- "y"
@@ -66,7 +64,7 @@ improve_fmt <- function(ptbl_fmt,
       cat("Column Idx   | Column Name  |  Column Width\n")
       cat("=============|==============|==============\n")
       for (idx in 1:n_nr_rec){
-        cat(idx, " | ", tbl_imp_fmt$ColName[idx], " | ", tbl_imp_fmt$NrPos[idx], "\n")
+        cat(idx, " | ", tbl_imp_fmt$ColName[idx], " | ", tbl_imp_fmt$ColWidth[idx], "\n")
       }
       answer <- readline(prompt = " * Enter row index for which column name should be changed: ")
       n_rename_idx <- as.integer(answer)
@@ -80,13 +78,5 @@ improve_fmt <- function(ptbl_fmt,
       tbl_imp_fmt$ColName[ptbl_col_rename$RowIndex[idx]] <- ptbl_col_rename$NewName[idx]
     }
   }
-
-  # check whether we have to add fmt columns
-  if (!is.null(ptbl_fmt_add)){
-    tbl_imp_fmt <- dplyr::bind_rows(tbl_imp_fmt, ptbl_fmt_add)
-  }
-
-  # return result
   return(tbl_imp_fmt)
-
 }

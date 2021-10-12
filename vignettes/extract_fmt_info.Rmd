@@ -62,6 +62,13 @@ tbl_gal_fmt$ColName[3] <- "BlutanteilAnimal"
 tbl_gal_fmt <- tbl_gal_fmt %>% slice(-(4:6))
 ```
 
+After the deletion of the rows, the start and the end positions must be re-computed. This can be done using the function `compute_positions()`. 
+
+```{r, eval=FALSE}
+tbl_gal_fmt <- qfmtchk:::compute_positions(ptbl_fmt = tbl_gal_fmt)
+```
+
+
 3. Row 6 corresponds to the blood content of the sire
 
 ```{r, eval=FALSE}
@@ -74,15 +81,15 @@ tbl_gal_fmt$ColName[6] <- "BlutanteilVater"
 tbl_gal_fmt$ColName[9] <- "Traechtigkeitsdauer"
 ```
 
-The above steps can also be done with the following function call
+The above steps can also be done with the following two function calls
 
 ```{r}
-tbl_gal_fmt <- improve_fmt(ptbl_fmt = tbl_gal_fmt,
-                           pvec_del_row_idx = 4:6,
-                           ptbl_col_rename = tibble::tibble(RowIndex = c(3,6,9),
-                                                            NewName=c("BlutanteilAnimal", 
-                                                                      "BlutanteilVater", 
-                                                                      "Traechtigkeitsdauer")))
+tbl_gal_fmt <- delete_row(ptbl_imp_fmt = tbl_gal_fmt, pvec_del_row_idx = c(4:6))
+tbl_gal_fmt <- rename_variable(ptbl_imp_fmt = tbl_gal_fmt,
+                            ptbl_col_rename = tibble::tibble(RowIndex = c(3,6,9),
+                                                             NewName=c("BlutanteilAnimal", 
+                                                                       "BlutanteilVater", 
+                                                                       "Traechtigkeitsdauer")))
 
 ```
 

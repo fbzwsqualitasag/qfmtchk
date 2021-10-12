@@ -53,7 +53,8 @@ extract_generic_fmt <- function(ps_sql_prg_path,
     # collect result
     tbl_cur_res <- tibble::tibble(ColName  = s_col_name,
                                   StartPos = n_start_pos,
-                                  EndPos   = n_end_pos)
+                                  EndPos   = n_end_pos,
+                                  ColWidth = n_nr_pos)
     # compute start position of next column
     n_start_pos <- n_end_pos + 1
     if (is.null(tbl_fmt)){
@@ -149,7 +150,8 @@ extract_kldat_fmt <- function(ps_sql_prg_path,
     # collect result
     tbl_cur_res <- tibble::tibble(ColName  = s_col_name,
                                   StartPos = n_start_pos,
-                                  EndPos   = n_end_pos)
+                                  EndPos   = n_end_pos,
+                                  ColWidth = n_col_width)
     if (is.null(tbl_kldat_fmt)){
       tbl_kldat_fmt <- tbl_cur_res
     } else {
