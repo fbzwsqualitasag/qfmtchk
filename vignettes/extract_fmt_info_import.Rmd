@@ -1,0 +1,26 @@
+---
+title: "Extract Data Format Information From Analysis Import Program"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Extract Data Format Information From Analysis Import Program}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(qfmtchk)
+```
+
+# Disclaimer
+The possibilities of extracting format information from analysis import programs is described in this vignette.
+
+
+# Analysis Import
+In the GE for GAL (GE-GAL), the first program that reads the data is 'modifyCalvingData_bvch.py'. This program reads the data from 'calvingData.txt' and outputs to the file 'calvingData_mod.txt'. The program modifyCalvingData_bvch.py changes the format of the data file. Therefore when checking the format of the input data, it is important to work with the data file for which the format information is correct. The format information extracted from the plsql export program is only valid for the result file of the export which is called 'calfingData.txt'. 

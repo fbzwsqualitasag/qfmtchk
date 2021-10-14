@@ -130,6 +130,11 @@ cat(head(readLines(s_gal_fmt_file), n=10L), sep = "\n")
 ```
 
 
+# Conclusion
+The above shown tests and experiments show that it is difficult to extract format information from the data export programs. Further experiments with extracting format information from analysis import programs are required.
+
+
+
 ```{r, echo=FALSE, results='asis'}
 cat(rmdhelp::get_latest_change(), "\n")
 ```
